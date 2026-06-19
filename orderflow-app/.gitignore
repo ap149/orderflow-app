@@ -37,3 +37,7 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Legacy app folder (temporary reference)
+_legacy/
+_backend/
