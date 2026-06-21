@@ -33,7 +33,7 @@ export function useReplayFeed() {
     tapeStore.tape.value = []
 
     try {
-      const q = query(dbRef(database, `priceFeed/${market.toLowerCase()}`), limitToLast(2000))
+      const q = query(dbRef(database, `priceFeedReplay/${market.toLowerCase()}`), limitToLast(4000))
       const snapshot = await get(q)
       if (!snapshot.exists()) { status.value = 'error'; return }
 

@@ -41,3 +41,6 @@ __screenshots__/
 # Legacy app folder (temporary reference)
 _legacy/
 _backend/
+
+#keys
+*.firebase.js

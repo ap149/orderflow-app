@@ -1,33 +1,59 @@
 <script setup>
 import { computed } from 'vue'
+import { getDeltaColor, getChgColor } from '../composables/useCellColor'
 
 const props = defineProps({
   tick: { type: Object, required: true },
+  maxCell: { type: Number, default: 20 },
+  baseChange: { type: Number, default: 1 },
 })
 
-const dirClass = computed(() => {
-  if (props.tick.chg > 0) return 'text-teal-600'
-  if (props.tick.chg < 0) return 'text-rose-600'
-  return 'text-stone-500'
+const timeLabel = computed(() => {
+  if (!props.tick?.utc) return '--:--:--'
+  const d = new Date(props.tick.utc)
+  return [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map(n => String(n).padStart(2, '0')).join(':')
 })
 
-const dirSymbol = computed(() => {
-  if (props.tick.chg > 0) return '▲'
-  if (props.tick.chg < 0) return '▼'
-  return '='
+const volStyle = computed(() => getDeltaColor(props.tick, props.maxCell))
+
+const priceChg = computed(() => {
+  const diff = parseFloat(props.tick.to_px) - parseFloat(props.tick.from_px)
+  return parseFloat(diff.toFixed(2))
 })
+
+const chgLabel = computed(() => {
+  const v = priceChg.value
+  if (v === 0) return '0'
+  return (v > 0 ? '+' : '') + v.toFixed(2)
+})
+
+const chgStyle = computed(() => getChgColor(priceChg.value, props.baseChange))
+
+const ltpChg = computed(() => {
+  if (props.tick.ltp == null) return null
+  const diff = parseFloat(props.tick.to_px) - parseFloat(props.tick.ltp)
+  return parseFloat(diff.toFixed(2))
+})
+
+const ltpChgLabel = computed(() => {
+  const v = ltpChg.value
+  if (v == null) return '--'
+  if (v === 0) return '0'
+  return (v > 0 ? '+' : '') + v.toFixed(2)
+})
+
+const ltpChgStyle = computed(() => ltpChg.value != null ? getChgColor(ltpChg.value, props.baseChange) : {})
 </script>
 
 <template>
   <!-- tape-new-entry animation plays once when this DOM node is created (key=utc in parent) -->
   <div class="tape-row flex items-center gap-2 px-2 py-0.5 text-[10px] border-b border-slate-100 font-mono">
-    <span :class="dirClass" class="w-3">{{ dirSymbol }}</span>
-    <span class="w-16 text-right font-semibold">{{ tick.to_px }}</span>
-    <span class="w-10 text-right">{{ tick.vol }}</span>
-    <span :class="tick.delta >= 0 ? 'text-teal-600' : 'text-rose-600'" class="w-10 text-right">
-      {{ tick.delta > 0 ? '+' : '' }}{{ tick.delta }}
-    </span>
-    <span class="text-slate-400 w-12 text-right">{{ tick.cum_vol }}</span>
+    <span class="w-14 text-left text-slate-400">{{ timeLabel }}</span>
+    <span class="w-16 text-center font-semibold">{{ tick.to_px }}</span>
+    <span :style="volStyle" class="w-12 text-center px-1">{{ tick.vol }}</span>
+    <!-- <span :style="chgStyle" class="w-12 text-center px-1">{{ chgLabel == 0 ? " " : chgLabel}}</span> -->
+    <span :style="ltpChgStyle" class="w-12 text-center px-1">{{ ltpChgLabel == 0 ? "=": ltpChgLabel}}</span>
   </div>
 </template>
 

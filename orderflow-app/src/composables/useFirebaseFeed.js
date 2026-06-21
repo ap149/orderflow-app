@@ -80,13 +80,16 @@ export function normalizeTick(raw, marketStore) {
 
   // New flat format
   if (raw.to_px !== undefined) {
+    const vol = raw.vol ?? 0
+    const chg = raw.chg ?? 0
     return {
       from_px: marketStore.roundPx(raw.from_px),
       to_px: marketStore.roundPx(raw.to_px),
-      vol: raw.vol ?? 0,
+      vol,
+      tick_delta: vol * Math.sign(chg),
       delta: raw.delta ?? 0,
       cum_vol: raw.cum_vol ?? 0,
-      chg: raw.chg ?? 0,
+      chg,
       utc: raw.utc ?? 0,
       from_vol: raw.from_vol ?? 0,
       from_delta: raw.from_delta ?? 0,
@@ -98,13 +101,16 @@ export function normalizeTick(raw, marketStore) {
   if (raw.from && raw.to) {
     const from_px = marketStore.roundPx(raw.from.price)
     const to_px = marketStore.roundPx(raw.to.price)
+    const vol = raw.to.volume ?? 0
+    const chg = raw.to.chg ?? 0
     return {
       from_px,
       to_px,
-      vol: raw.to.volume ?? 0,
+      vol,
+      tick_delta: vol * Math.sign(chg),
       delta: raw.to.delta ?? 0,
       cum_vol: raw.to.total_volume ?? 0,
-      chg: raw.to.chg ?? 0,
+      chg,
       utc: Number(raw.to.utc ?? 0),
       from_vol: raw.from.volume ?? 0,
       from_delta: raw.from.delta ?? 0,

@@ -5,6 +5,7 @@ import { getDeltaColor, cellLabel } from '../composables/useCellColor'
 const props = defineProps({
   tick: { type: Object, default: null }, // { vol, delta, cum_vol, chg, utc } or null
   maxCell: { type: Number, required: true },
+  price: { type: String, default: '' }, // row's price key — used to detect RecycleScroller recycling
   flash: { type: Boolean, default: false },
   highlight: { type: Boolean, default: false },
 })
@@ -18,13 +19,14 @@ const cellStyle = computed(() => ({
     : {}),
 }))
 
-// Only flash when a genuinely newer tick arrives (utc strictly increasing).
-// Guards against RecycleScroller recycling a cell with older data (newUtc < oldUtc).
+// Flash only when a genuinely newer tick arrives on the same price row.
+// Guards against RecycleScroller recycling this cell to a different row (price changes)
+// or replaying older data (newUtc < oldUtc).
 const flashCount = ref(0)
 watch(
-  () => props.tick?.utc,
-  (newUtc, oldUtc) => {
-    if (props.flash && newUtc != null && oldUtc != null && newUtc > oldUtc) {
+  () => [props.price, props.tick?.utc],
+  ([newPrice, newUtc], [oldPrice, oldUtc]) => {
+    if (props.flash && newPrice === oldPrice && newUtc != null && oldUtc != null && newUtc > oldUtc) {
       flashCount.value++
     }
   },

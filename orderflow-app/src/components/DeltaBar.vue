@@ -28,7 +28,7 @@ const isNeg = computed(() => props.value < 0)
     </template>
     <!-- delta bar: fills from centre, direction indicates sign -->
     <template v-else>
-      <div class="absolute inset-0 flex items-center">
+      <div class="absolute inset-0 flex items-stretch">
         <div class="w-1/2 flex justify-end">
           <div
             v-if="isNeg"

@@ -19,6 +19,7 @@ const ladderStore = useLadderStore()
         :price="item.price"
         :from="item.from"
         :to="item.to"
+        :vol="item.fromVol"
         :active="item.active"
         :highlight-to="item.highlightTo"
         :highlight-from="item.highlightFrom"

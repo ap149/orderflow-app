@@ -10,7 +10,7 @@ function intensityToGrade(absVal, max) {
 }
 
 function gradeToStyle(color, grade) {
-  const alpha = Math.min(1, 0.2 + grade * 0.08).toFixed(2)
+  const alpha = Math.min(1, 0.15 + grade * 0.08).toFixed(2)
   return {
     backgroundColor: `rgba(${COLORS[color]},${alpha})`,
     color: grade > 4 ? '#fff' : 'inherit',
@@ -37,6 +37,16 @@ export function getBarColor(value, max) {
   const grade = intensityToGrade(Math.abs(value), max)
   const color = value > 0 ? 'teal' : 'rose'
   return { backgroundColor: `rgba(${COLORS[color]},${(grade * 0.09).toFixed(2)})` }
+}
+
+/**
+ * Returns an inline style object for tape Chg column, scaled in multiples of baseChange (max 8×).
+ */
+export function getChgColor(priceChg, baseChange) {
+  if (!priceChg || !baseChange) return {}
+  const multiples = Math.abs(priceChg) / baseChange
+  const grade = intensityToGrade(multiples, 10)
+  return gradeToStyle(priceChg > 0 ? 'teal' : 'rose', grade)
 }
 
 /**
