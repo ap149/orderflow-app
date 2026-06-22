@@ -1,6 +1,9 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { getDeltaColor, cellLabel } from '../composables/useCellColor'
+import { useTooltip } from '../composables/useTooltip'
+
+const tooltip = useTooltip()
 
 const props = defineProps({
   tick: { type: Object, default: null }, // { vol, delta, cum_vol, chg, utc } or null
@@ -37,6 +40,9 @@ watch(
   <div
     class="relative w-10 shrink-0 h-full flex items-center justify-end pr-1 text-[10px] leading-none border-l border-slate-200 select-none overflow-hidden"
     :style="cellStyle"
+    @mouseenter="tick && tooltip.show($event, tick)"
+    @mousemove="tooltip.move($event)"
+    @mouseleave="tooltip.hide()"
   >
     {{ label }}
     <div v-if="flash && flashCount > 0" :key="flashCount" class="cell-flash" />

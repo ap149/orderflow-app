@@ -75,7 +75,7 @@ export const useLadderStore = defineStore('ladder', () => {
     if (toRow) {
       if (vol > 0) {
         const prev = toRow.to.value
-        const next = [{ vol, tick_delta, delta, cum_vol, chg, utc }, ...prev.slice(0, prev.length - 1)]
+        const next = [{ vol, tick_delta, delta, cum_vol, chg, utc, from_px, to_px }, ...prev.slice(0, prev.length - 1)]
         toRow.to.value = next
 
         // Move to-highlight to this row
@@ -106,7 +106,7 @@ export const useLadderStore = defineStore('ladder', () => {
       const prev = fromRow.from.value
       const next = [
         ...prev.slice(1),
-        { vol: from_vol, tick_delta, delta: from_delta, cum_vol: from_cum_vol, chg, utc },
+        { vol: from_vol, tick_delta, delta: from_delta, cum_vol: from_cum_vol, chg, utc, from_px, to_px },
       ]
       fromRow.from.value = next
       fromRow.fromVol.value = from_vol

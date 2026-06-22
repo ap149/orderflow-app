@@ -9,6 +9,7 @@ import { useFirebaseFeed } from '../composables/useFirebaseFeed'
 import { useReplayFeed } from '../composables/useReplayFeed'
 import { usePriceFeedCapture } from '../composables/usePriceFeedCapture'
 import { useMarketStore } from '../stores/market'
+import CellTooltip from '../components/CellTooltip.vue'
 
 const marketStore = useMarketStore()
 const liveFeed = useFirebaseFeed()
@@ -47,6 +48,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col h-screen bg-white overflow-hidden">
+    <CellTooltip />
     <!-- Header -->
     <div class="flex items-center px-4 py-2 border-b border-slate-200 shrink-0 gap-4">
       <!-- Left: clock + countdowns -->
